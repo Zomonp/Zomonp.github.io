@@ -560,7 +560,7 @@ post:
 
   # 文章在首页的默认封面图，当没有指定 index_img 时会使用该图片，若两者都为空则不显示任何图片
   # Path of the default post cover when `index_img` is not set. If both are empty, no image will be displayed
-  default_index_img:
+  default_index_img: source/img/1.png
 
   # 文章标题下方的元信息
   # Meta information below title
@@ -978,7 +978,7 @@ about:
   banner_img: source/img/1.png
   banner_img_height: 100
   banner_mask_alpha: 0.5
-  avatar: /img/avatar.png
+  avatar: source/img/1.png
   name: "Fluid"
   intro: "An elegant theme for Hexo"
   # 更多图标可从 https://hexo.fluid-dev.com/docs/icon/ 查找，`class` 代表图标的 css class，添加 `qrcode` 后，图标不再是链接而是悬浮二维码

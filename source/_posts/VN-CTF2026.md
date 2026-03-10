@@ -1,5 +1,5 @@
 ---
-title: VNCTF-2026
+title: VNCTF-2026-Web WP
 date: 2026-03-10 00:02:01
 tags: wp/sum
 categories: 赛后wp

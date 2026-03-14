@@ -1,5 +1,5 @@
 ---
-title: VNCTF-2026-Web WP
+title: 2026全国软件系统安全赛-web wp
 date: 2026-03-14 17:45:14
 tags: wp/sum
 categories: 赛后wp

@@ -29,7 +29,7 @@
   
   
   <entry>
-    <title>xxe</title>
+    <title>xxe(未完工)</title>
     <link href="/2026/04/07/xxe/"/>
     <url>/2026/04/07/xxe/</url>
     
@@ -120,13 +120,13 @@
     
     <tags>
       
-      <tag>wp/sum</tag>
-      
       <tag>SSRF漏洞</tag>
       
       <tag>Pickle反序列化</tag>
       
       <tag>jwt密钥伪造</tag>
+      
+      <tag>wp/sum</tag>
       
     </tags>
     

